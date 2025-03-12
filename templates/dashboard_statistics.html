@@ -1,20 +1,20 @@
 {% extends 'dashboard_ui.html' %}
 {% block dashboard_content %}
 
-<div class="container mx-auto">
+<div class="container mx-auto px-4">
     <!-- First Row: 2 Cards -->
-    <div class="grid grid-cols-3 gap-6">
-        <!-- Items Chart (2/3 width) -->
-        <div class="relative flex items-center h-full w-full p-6 col-span-2">
+    <div class="grid grid-cols-1 md:grid-cols-3 md:gap-6">
+        <!-- Items Chart (2/3 width on medium screens, full-width on small screens) -->
+        <div class="relative flex items-center h-full w-full py-6 md:col-span-2">
             <div class="relative flex flex-col justify-between h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto">
                 <h2 class="text-lg font-semibold mb-4">Items Shown</h2>
                 <canvas id="itemsChart"></canvas>
             </div>
         </div>
 
-        <!-- Website Traffic (1/3 width) -->
-        <div class="relative flex items-center h-full w-full p-6">
-            <div class="relative flex flex-col justify-center h-full rounded-lg bg-white shadow-lg p-6 w-full max-w-3xl mx-auto text-center">
+        <!-- Website Traffic (1/3 width on medium screens, full-width on small screens) -->
+        <div class="relative flex items-center h-full w-full md:p-6">
+            <div class="relative flex flex-col justify-center h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto text-center">
                 <h2 class="text-lg font-semibold mb-4">Top 5 Items</h2>
                 <canvas id="topItemsChart"></canvas>
             </div>
@@ -22,32 +22,33 @@
     </div>
 
     <!-- Second Row: 3 Cards (Equal Height Cards) -->
-    <div class="grid grid-cols-3 gap-6 mt-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
         <!-- Most Popular Item -->
-        <div class="relative flex items-center h-full w-full p-6">
-            <div class="relative flex flex-col justify-center h-full rounded-lg bg-white shadow-lg p-6 w-full max-w-3xl mx-auto text-center">
+        <div class="relative flex items-center h-full w-full md:p-6">
+            <div class="relative flex flex-col justify-center h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto text-center">
                 <h2 class="text-lg font-semibold mb-2">Most Popular Item</h2>
                 <p id="mostPopular" class="text-2xl font-bold text-green-600"></p>
             </div>
         </div>
 
         <!-- Least Popular Item -->
-        <div class="relative flex items-center h-full w-full p-6">
-            <div class="relative flex flex-col justify-center h-full rounded-lg bg-white shadow-lg p-6 w-full max-w-3xl mx-auto text-center">
+        <div class="relative flex items-center h-full w-full md:p-6">
+            <div class="relative flex flex-col justify-center h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto text-center">
                 <h2 class="text-lg font-semibold mb-2">Least Popular Item</h2>
                 <p id="leastPopular" class="text-2xl font-bold text-red-600"></p>
             </div>
         </div>
 
         <!-- Website Traffic -->
-        <div class="relative flex items-center h-full w-full p-6">
-            <div class="relative flex flex-col justify-center h-full rounded-lg bg-white shadow-lg p-6 w-full max-w-3xl mx-auto text-center">
+        <div class="relative flex items-center h-full w-full md:p-6 pb-6">
+            <div class="relative flex flex-col justify-center h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto text-center">
                 <h2 class="text-lg font-semibold mb-2">Advertisement Traffic</h2>
                 <p id="trafficCount" class="text-4xl font-bold text-blue-600"></p>
             </div>
         </div>
     </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
