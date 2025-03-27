@@ -13,8 +13,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
 
-
-
 @app.route("/")
 def homepage():
     products = Product.query.all()
