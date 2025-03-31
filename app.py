@@ -10,7 +10,9 @@ from models.db import AdvertisementTargeting
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:Password123!@localhost:3306/inf2009'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:Password123!@localhost:3306/inf2009'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:Password123!@192.168.122.230:3306/inf2009'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
@@ -92,7 +94,7 @@ def upload_advertisement():
         image_data = image_file.read() if image_file else None
 
         # Checks if fields are not empty
-        if not (product_name and product_category and target_audience and target_gender and raw_keywords):
+        if not (product_name and product_category and target_audience and target_gender and raw_keywords and image_file):
             error_message = "All fields are required. Please fill in all the fields before submitting."
             # Instead of flashing and redirecting, re-render the template with the error message.
             return render_template('dashboard_upload.html', error_message=error_message, form_data=request.form)

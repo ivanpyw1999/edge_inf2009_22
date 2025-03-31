@@ -4,58 +4,102 @@
 <div class="container mx-auto px-4">
     <!-- First Row: 2 Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-        <!-- Category Engagement Chart (2/3 width on medium screens, full-width on small screens) -->
+        <!-- Category Engagement Chart -->
         <div class="relative flex items-center h-full w-full md:p-6 md:col-span-2">
-            <div class="relative flex flex-col justify-between h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto">
-                <h2 class="text-lg font-semibold mb-4">Category Engagement</h2>
-                <canvas id="targetingChart"></canvas>
+            <div class="relative flex flex-col h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto">
+                <!-- Header at the top center -->
+                <div class="text-center">
+                    <h2 class="text-lg font-semibold mb-4">Category Engagement</h2>
+                </div>
+                <!-- Content centered both vertically and horizontally -->
+                <div class="flex-grow flex justify-center items-center">
+                    {% if category_engagement_data.categories|length > 0 %}
+                        <canvas id="targetingChart"></canvas>
+                    {% else %}
+                        <p class="text-center text-gray-500">No data found</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
         <!-- Top 5 Items Chart -->
         <div class="relative flex items-center h-full w-full md:p-6">
-            <div class="relative flex flex-col justify-center h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto text-center">
-                <h2 class="text-lg font-semibold mb-4">Top 5 Items</h2>
-                <canvas id="topItemsChart"></canvas>
+            <div class="relative flex flex-col h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto">
+                <!-- Header at the top center -->
+                <div class="text-center">
+                    <h2 class="text-lg font-semibold mb-4">Top 5 Items</h2>
+                </div>
+                <!-- Content centered -->
+                <div class="flex-grow flex justify-center items-center">
+                    {% if top_ads|length > 0 %}
+                        <canvas id="topItemsChart"></canvas>
+                    {% else %}
+                        <p class="text-center text-gray-500">No data found</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Second Row: 3 Cards (Equal Height Cards) -->
+    <!-- Second Row: 3 Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
         <!-- Most Popular Item -->
         <div class="relative flex items-center h-full w-full md:p-6">
-            <div class="relative flex flex-col justify-center h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto text-center">
-                <h2 class="text-lg font-semibold mb-2">Most Popular Item</h2>
-                <p id="mostPopular" class="text-2xl font-bold text-green-600">
-                    {% if popular %}
-                      {{ popular.name }} ({{ popular.counter }})
-                    {% else %}
-                      N/A
-                    {% endif %}
-                </p>
+            <div class="relative flex flex-col h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto">
+                <!-- Header at the top center -->
+                <div class="text-center">
+                    <h2 class="text-lg font-semibold mb-2">Most Popular Item</h2>
+                </div>
+                <!-- Content centered -->
+                <div class="flex-grow flex justify-center items-center">
+                    <p id="mostPopular" class="text-2xl font-bold text-green-600 text-center">
+                        {% if popular %}
+                            {{ popular.name }} ({{ popular.counter }})
+                        {% else %}
+                            No data found
+                        {% endif %}
+                    </p>
+                </div>
             </div>
         </div>
 
         <!-- Least Popular Item -->
         <div class="relative flex items-center h-full w-full md:p-6">
-            <div class="relative flex flex-col justify-center h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto text-center">
-                <h2 class="text-lg font-semibold mb-2">Least Popular Item</h2>
-                <p id="leastPopular" class="text-2xl font-bold text-red-600">
-                    {% if least %}
-                      {{ least.name }} ({{ least.counter }})
-                    {% else %}
-                      N/A
-                    {% endif %}
-                </p>
+            <div class="relative flex flex-col h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto">
+                <!-- Header at the top center -->
+                <div class="text-center">
+                    <h2 class="text-lg font-semibold mb-2">Least Popular Item</h2>
+                </div>
+                <!-- Content centered -->
+                <div class="flex-grow flex justify-center items-center">
+                    <p id="leastPopular" class="text-2xl font-bold text-red-600 text-center">
+                        {% if least %}
+                            {{ least.name }} ({{ least.counter }})
+                        {% else %}
+                            No data found
+                        {% endif %}
+                    </p>
+                </div>
             </div>
         </div>
 
         <!-- Advertisement Traffic -->
         <div class="relative flex items-center h-full w-full md:p-6 pb-6">
-            <div class="relative flex flex-col justify-center h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto text-center">
-                <h2 class="text-lg font-semibold mb-2">Advertisement Traffic</h2>
-                <p id="trafficCount" class="text-4xl font-bold text-blue-600">{{ total_ads }}</p>
+            <div class="relative flex flex-col h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto">
+                <!-- Header at the top center -->
+                <div class="text-center">
+                    <h2 class="text-lg font-semibold mb-2">Advertisement Traffic</h2>
+                </div>
+                <!-- Content centered -->
+                <div class="flex-grow flex justify-center items-center">
+                    <p id="trafficCount" class="text-2xl font-bold text-blue-600 text-center">
+                        {% if total_ads and total_ads > 0 %}
+                            {{ total_ads }}
+                        {% else %}
+                            No data found
+                        {% endif %}
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -68,61 +112,64 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     // --- Category Engagement Bar Chart ---
-    // Use the new data passed from Flask
     const categoryEngagementData = {{ category_engagement_data | tojson }};
     const categories = categoryEngagementData.categories;
     const totals = categoryEngagementData.totals;
-
-    const ctx = document.getElementById("targetingChart").getContext("2d");
-    new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: categories,
-            datasets: [{
-                label: "Engagement",
-                data: totals,
-                backgroundColor: "rgba(75, 192, 192, 0.5)",
-                borderColor: "rgba(75, 192, 192, 1)",
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
+    
+    if (categories.length > 0) {
+        const ctx = document.getElementById("targetingChart").getContext("2d");
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: categories,
+                datasets: [{
+                    label: "Engagement",
+                    data: totals,
+                    backgroundColor: "rgba(75, 192, 192, 0.5)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 
-    // --- Top 5 Items Pie Chart (remains unchanged) ---
+    // --- Top 5 Items Pie Chart ---
     const topAds = {{ top_ads | tojson }};
-    const topAdsLabels = topAds.map(ad => ad.name);
-    const topAdsData = topAds.map(ad => ad.counter);
+    if (topAds.length > 0) {
+        const topAdsLabels = topAds.map(ad => ad.name);
+        const topAdsData = topAds.map(ad => ad.counter);
 
-    const pieCtx = document.getElementById("topItemsChart").getContext("2d");
-    new Chart(pieCtx, {
-        type: "pie",
-        data: {
-            labels: topAdsLabels,
-            datasets: [{
-                data: topAdsData,
-                backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { position: "bottom" },
-                datalabels: {
-                    formatter: (value, ctx) => ctx.chart.data.labels[ctx.dataIndex],
-                    color: "#fff",
-                    font: { weight: "bold" }
+        const pieCtx = document.getElementById("topItemsChart").getContext("2d");
+        new Chart(pieCtx, {
+            type: "pie",
+            data: {
+                labels: topAdsLabels,
+                datasets: [{
+                    data: topAdsData,
+                    backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: "bottom" },
+                    datalabels: {
+                        formatter: (value, ctx) => ctx.chart.data.labels[ctx.dataIndex],
+                        color: "#fff",
+                        font: { weight: "bold" }
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 });
 </script>
 
