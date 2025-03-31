@@ -3,12 +3,12 @@
 
 <div class="container mx-auto px-4">
     <!-- First Row: 2 Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 md:gap-6">
-        <!-- Items Chart (2/3 width on medium screens, full-width on small screens) -->
-        <div class="relative flex items-center h-full w-full py-6 md:col-span-2">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        <!-- Category Engagement Chart (2/3 width on medium screens, full-width on small screens) -->
+        <div class="relative flex items-center h-full w-full md:p-6 md:col-span-2">
             <div class="relative flex flex-col justify-between h-full rounded-lg bg-white shadow-lg p-6 w-full mx-auto">
-                <h2 class="text-lg font-semibold mb-4">Items Shown</h2>
-                <canvas id="itemsChart"></canvas>
+                <h2 class="text-lg font-semibold mb-4">Category Engagement</h2>
+                <canvas id="targetingChart"></canvas>
             </div>
         </div>
 
@@ -59,26 +59,6 @@
             </div>
         </div>
     </div>
-
-    <!-- List of Products (Test Only) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        {% for product in products %}
-        <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col items-center p-6 text-center transition-transform hover:scale-105">
-            <!-- Image Placeholder (Optional) -->
-            <div class="w-24 h-24 bg-gray-200 rounded-full mb-4 flex items-center justify-center">
-                <span class="text-gray-400 text-sm">Image</span>
-            </div>
-    
-            <!-- Product Info -->
-            <h3 class="text-xl font-semibold text-gray-800">{{ product.name }}</h3>
-            <p class="text-sm text-gray-500 mb-2">{{ product.category }}</p>
-    
-            <!-- Example Button -->
-            <button class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">View Details</button>
-        </div>
-        {% endfor %}
-    </div>
-    
 </div>
 
 <!-- Include Chart.js and the datalabels plugin -->
@@ -87,18 +67,20 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // (Optional) Items Chart - you can either populate this dynamically or leave it as sample data.
-    const itemData = [12, 19, 25, 32, 18, 21, 40];
-    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    const ctx = document.getElementById("itemsChart").getContext("2d");
+    // --- Category Engagement Bar Chart ---
+    // Use the new data passed from Flask
+    const categoryEngagementData = {{ category_engagement_data | tojson }};
+    const categories = categoryEngagementData.categories;
+    const totals = categoryEngagementData.totals;
 
+    const ctx = document.getElementById("targetingChart").getContext("2d");
     new Chart(ctx, {
         type: "bar",
         data: {
-            labels: days,
+            labels: categories,
             datasets: [{
-                label: "Items Shown",
-                data: itemData,
+                label: "Engagement",
+                data: totals,
                 backgroundColor: "rgba(75, 192, 192, 0.5)",
                 borderColor: "rgba(75, 192, 192, 1)",
                 borderWidth: 1
@@ -106,18 +88,15 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         options: {
             responsive: true,
-            scales: { y: { beginAtZero: true } },
-            plugins: {
-                datalabels: {
-                    anchor: 'end',
-                    align: 'top',
-                    formatter: (value) => value
+            scales: {
+                y: {
+                    beginAtZero: true
                 }
             }
         }
     });
 
-    // Pass top_ads from Flask to JavaScript for the Top 5 Items pie chart.
+    // --- Top 5 Items Pie Chart (remains unchanged) ---
     const topAds = {{ top_ads | tojson }};
     const topAdsLabels = topAds.map(ad => ad.name);
     const topAdsData = topAds.map(ad => ad.counter);
