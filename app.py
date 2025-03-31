@@ -48,17 +48,19 @@ def homepage():
 
     # New query: Sum engagement per category
     category_results = db.session.query(
-        Product.category,
-        func.sum(AdvertisementTargeting.counter).label('total')
+    Product.category,
+    func.sum(AdvertisementTargeting.counter).label('total')
     ).join(
         Product, Product.id == AdvertisementTargeting.product_id
     ).group_by(
         Product.category
+    ).having(
+        func.sum(AdvertisementTargeting.counter) >= 1
     ).all()
 
-    # Prepare lists for categories and their total engagement
     categories = [row.category for row in category_results]
     totals = [row.total for row in category_results]
+
 
     category_engagement_data = {
         'categories': categories,
