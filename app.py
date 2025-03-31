@@ -10,7 +10,7 @@ from models.db import AdvertisementTargeting
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:Password123!@172.20.10.2:3306/inf2009'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:Password123!@localhost:3306/inf2009'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
