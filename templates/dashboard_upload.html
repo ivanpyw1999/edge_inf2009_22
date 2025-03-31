@@ -12,10 +12,6 @@
 
             {% if error_message %}
                 <div class="flex items-start gap-3 bg-red-50 border-l-4 border-red-500 text-red-800 px-4 py-3 rounded shadow-sm mb-4">
-                    <svg class="w-5 h-5 mt-1 flex-shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
                     <div class="flex-1 text-sm leading-5">
                         <span class="font-semibold"> {{ error_message }}</span>
                     </div>
@@ -25,7 +21,7 @@
 
 
             <!-- Admin Form -->
-            <form action="" method="POST" class="mt-6 space-y-6" enctype="multipart/form-data">
+            <form action="" method="POST" class="mt-6 space-y-6" enctype="multipart/form-data" onsubmit="setLoadingState()">
                 
                 <!-- Product Name -->
                 <div>
@@ -127,11 +123,19 @@
 
                 <!-- Submit Button -->
                 <div>
-                    <button type="submit"
-                        class="w-full rounded-md bg-indigo-600 px-4 py-2 text-white font-medium shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2">
-                        Submit Advertisement
+                    <button id="submit-btn" type="submit"
+                        class="w-full flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-white font-medium shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2">
+                        <span id="submit-btn-text">Upload Advertisement</span>
+                        <!-- Spinner Icon (hidden by default) -->
+                        <svg id="loading-spinner" class="hidden ml-2 h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8v8z"></path>
+                        </svg>
                     </button>
                 </div>
+
 
                 
                 
@@ -142,6 +146,13 @@
 <!-- Script to update file name -->
 <!-- Script to handle file input change and drag and drop -->
 <script>
+    function setLoadingState() {
+      const btn = document.getElementById("submit-btn");
+      const spinner = document.getElementById("loading-spinner");
+      spinner.classList.remove("hidden");
+      btn.disabled = true;
+    }
+
     // Update label on file selection via file input
     document.getElementById('file-upload').addEventListener('change', function(event) {
         if (event.target.files.length > 0) {
