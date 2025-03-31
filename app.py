@@ -129,7 +129,7 @@ def upload_advertisement():
 
 
 
-@app.route('/update/<int:productID>', methods=['GET'])
+@app.route('/update/<int:productID>', methods=['POST'])
 def update_API(productID):
     # Find the AdvertisementTargeting record associated with the given productID
     ad_target = AdvertisementTargeting.query.filter_by(product_id=productID).first()
