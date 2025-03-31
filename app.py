@@ -75,6 +75,7 @@ def homepage():
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_advertisement():
+    error_message = None
     if request.method == 'POST':
         # Get product details from the form
         product_name = request.form.get('product-name')
@@ -88,20 +89,16 @@ def upload_advertisement():
 
         # Optionally handle file upload if needed:
         image_file = request.files.get('file-upload')
-        if image_file:
-            image_data = image_file.read()
-        else:
-            image_data = None
+        image_data = image_file.read() if image_file else None
 
         # Checks if fields are not empty
         if not (product_name and product_category and target_audience and target_gender and raw_keywords):
-            flash("All fields are required. Please fill in all the fields before submitting.")
-            return redirect(url_for('upload_advertisement'))
+            error_message = "All fields are required. Please fill in all the fields before submitting."
+            # Instead of flashing and redirecting, re-render the template with the error message.
+            return render_template('dashboard_upload.html', error_message=error_message, form_data=request.form)
 
-        # Convert the string into a list of keywords
+        # Convert the string into a list of keywords and then to a JSON string
         keywords_list = [kw.strip() for kw in raw_keywords.split(',')]
-
-        # Convert the list to a valid JSON string
         json_keywords = json.dumps(keywords_list)
 
         # Create the product first
@@ -114,7 +111,6 @@ def upload_advertisement():
         db.session.flush()  # Flush to assign new_product.id
 
         # Create an AdvertisementTargeting record linked to the product.
-        # Use the form data, or if not provided, fall back to default values.
         new_targeting = AdvertisementTargeting(
             product_id=new_product.id,
             targeted_audience=target_audience,
@@ -127,6 +123,7 @@ def upload_advertisement():
         return redirect(url_for('homepage'))
 
     return render_template('dashboard_upload.html')
+
 
 
 
